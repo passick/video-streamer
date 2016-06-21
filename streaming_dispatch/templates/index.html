@@ -1,0 +1,15 @@
+<html>
+  <head>
+  <title>
+    Streams
+  </title>
+  </head>
+  <body>
+  {% for stream in streams %}
+  <p>
+  <a href="{% url 'stream' stream.id %}">{{stream.name}}</a>
+  {{stream.start}}
+  </p>
+  {% endfor %}
+  </body>
+</html>
