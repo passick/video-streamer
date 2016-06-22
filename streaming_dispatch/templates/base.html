@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <script src="http://cdn.dashjs.org/latest/dash.all.min.js"></script>
+    <script>
+      function startVideo(mpd) {
+        var video, context, player;
+        video = document.querySelector('video');
+        context = new Dash.di.DashContext();
+        player = new MediaPlayer(context);
+        player.startup();
+        player.attachView(video);
+        player.setAutoPlay(true);
+        player.attachSource(mpd);
+      } 
+    </script>
+  </head>
+
+  <body onload="startVideo('{{dash_url}}')">
+    {% block content %}
+    {% endblock %}
+  </body>
+</html>

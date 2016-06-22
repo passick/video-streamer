@@ -9,6 +9,8 @@ from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm
 from datetime import datetime
 
+from utils import *
+
 from .models import Stream
 
 def index(request):
@@ -16,7 +18,13 @@ def index(request):
 
 def stream(request, stream_id):
     requested_stream = get_object_or_404(Stream, id=stream_id)
-    return HttpResponse('haha ' + requested_stream.name)
+    is_author = (request.user == requested_stream.author)
+    return render(request, 'stream.html',
+            {'stream': requested_stream,
+                'is_author': is_author,
+                'dash_url': get_dash_stream_url(requested_stream),
+                'viewer_url': get_stream_viewer_url(requested_stream),
+                'publisher_url': get_stream_publisher_url(requested_stream)})
 
 @login_required
 def create_stream(request):
@@ -28,6 +36,9 @@ def create_stream(request):
             stream.author = request.user
             stream.start = datetime.now()
             stream.save()
+            if not push_stream_to_server(stream):
+                stream.delete()
+                return HttpResponse('Could not connect to streaming server')
             return redirect('stream', stream_id=stream.id)
     else:
         form = StreamForm()

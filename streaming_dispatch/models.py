@@ -9,3 +9,5 @@ class Stream(models.Model):
     name = models.CharField(max_length=100)
     start = models.DateTimeField()
     active = models.BooleanField()
+    key = models.CharField(max_length=100, null=True)
+    server = models.CharField(max_length=100, null=True)

@@ -1,0 +1,33 @@
+{% block content %}
+{% endblock %}
+<html>
+  <head>
+    <!--<script src="http://cdn.dashjs.org/latest/dash.all.min.js"></script>-->
+    {% load staticfiles %}
+    <script src="{% static "shaka-player.compiled.js" %}"></script>
+    <script src="{% static "script.js" %}"></script>
+    <script>
+      #function startVideo(mpd) {
+        #var video, context, player;
+        #video = document.querySelector('video');
+        #player = dashjs.MediaPlayer().create();
+        #player.initialize(video, mpd, true);
+      #} 
+    </script>
+  </head>
+
+  <body>
+    {{ stream.name }}
+    <p>
+    {% if is_author %}
+    Publisher url: <a href="{{publisher_url}}">{{publisher_url}}</a>.
+    {% else %}
+    Url: <a href="{{viewer_url}}">{{viewer_url}}</a>.
+    {% endif %}
+    </p>
+    <div>
+      <video id="video" source="{{dash_url}}" controls autoplay></video>
+      <!--<video data-dashjs-player autoplay src="http://dash.edgesuite.net/envivio/EnvivioDash3/manifest.mpd" controls></video>-->
+    </div>
+  </body>
+</html>
