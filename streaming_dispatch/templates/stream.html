@@ -1,33 +1,36 @@
-{% block content %}
-{% endblock %}
-<html>
-  <head>
-    <!--<script src="http://cdn.dashjs.org/latest/dash.all.min.js"></script>-->
-    {% load staticfiles %}
-    <script src="{% static "shaka-player.compiled.js" %}"></script>
-    <script src="{% static "script.js" %}"></script>
-    <script>
-      #function startVideo(mpd) {
-        #var video, context, player;
-        #video = document.querySelector('video');
-        #player = dashjs.MediaPlayer().create();
-        #player.initialize(video, mpd, true);
-      #} 
-    </script>
-  </head>
+{% extends 'base.html' %}
 
-  <body>
-    {{ stream.name }}
-    <p>
-    {% if is_author %}
-    Publisher url: <a href="{{publisher_url}}">{{publisher_url}}</a>.
-    {% else %}
-    Url: <a href="{{viewer_url}}">{{viewer_url}}</a>.
-    {% endif %}
-    </p>
-    <div>
-      <video id="video" source="{{dash_url}}" controls autoplay></video>
+{% block content %}
+<div class="stream">
+  <div class="stream-name">
+    <h4>{{ stream.name }}</h4>
+    by
+    <a href="{% url 'index' %}?by={{ stream.author.username }}">
+      {{ stream.author.username }}
+    </a>
+  </div>
+  {% if not stream.active %}
+    <div class="offline-notice">
+      <h4>This stream is offline</h4>
+    </div>
+  {% else %}
+    <div id="stream_div">
+      <video id="video" source="{{stream.dash_url}}" controls autoplay></video>
       <!--<video data-dashjs-player autoplay src="http://dash.edgesuite.net/envivio/EnvivioDash3/manifest.mpd" controls></video>-->
     </div>
-  </body>
-</html>
+  {% endif %}
+  <p>
+  {% if is_author %}
+  Publishing url:
+  <a href="{{stream.publisher_url}}">{{stream.publisher_url}}</a>.
+  Paste this link into your favourite streaming software.
+  For example:
+  <pre><code>
+ffmpeg -f alsa -i default -f v4l2 -video_size 640x480 \
+-i /dev/video0 -vcodec libx264 -acodec aac -ar 44100 -f \
+flv -r 25 "{{stream.publisher_url}}"
+  </code></pre>
+  {% endif %}
+  </p>
+</div>
+{% endblock %}

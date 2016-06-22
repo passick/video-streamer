@@ -1,0 +1,125 @@
+#main {
+  max-width: 78rem;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+a {
+  /*text-decoration: underline;*/
+}
+
+@media all and (max-width: 56rem) {
+  .items {
+    width: 52rem;
+    margin: 0 auto;
+  }
+}
+
+@media all and (max-width: 30rem) {
+  .items {
+    width: 26rem;
+    margin: 0 auto;
+  }
+}
+
+.thumb img {
+  width: 25rem;
+  height: 25rem;
+  object-fit: cover;
+}
+
+.thumb {
+  width: 25rem;
+  text-align: center;
+}
+
+.stream-item {
+  margin: 2rem 0.5rem;
+}
+
+.header {
+  height: 5.2rem;
+  width: 100%;
+}
+
+.header-container {
+  max-width: 78rem;
+  margin: 1rem auto;
+}
+
+.header-container h2 {
+  text-align: center;
+}
+
+.header-container h2 a {
+  text-decoration: none;
+}
+
+.stream h4 {
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.stream p {
+  max-width: 60rem;
+}
+
+.login-register {
+  text-align: center;
+}
+
+.logout {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+form {
+  margin-top: 1rem;
+  width: 30rem;
+}
+
+.submit-button button {
+  width: 12rem;
+  text-align: center;
+}
+
+.submit-button {
+  width: 12rem;
+  margin: 0  auto;
+}
+
+form span {
+  display: none;
+}
+
+.offline-notice {
+  margin-top: 6rem;
+  margin-bottom: 7rem;
+}
+
+.stream-name {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.stream-name h4 {
+  margin-bottom: -0.5rem;
+}
+
+.online {
+  display: inline-block;
+  color: lightgreen;
+}
+
+code {
+  max-width: 30rem;
+}
+
+ul.errorlist {
+  list-style-type: none;
+  margin-top: -0.5rem;
+  margin-bottom: -0.5rem;
+}
+

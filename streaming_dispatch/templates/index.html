@@ -1,15 +1,25 @@
-<html>
-  <head>
-  <title>
-    Streams
-  </title>
-  </head>
-  <body>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="items">
+  {% if not streams %}
+    <div class="offline-notice">
+      <h4>No streams</h4>
+    </div>
+  {% endif %}
   {% for stream in streams %}
-  <p>
-  <a href="{% url 'stream' stream.id %}">{{stream.name}}</a>
-  {{stream.start}}
-  </p>
+  <div class="stream-item float-left">
+    <div class="thumb">
+      <a href="{% url 'stream' stream.id %}">
+        <img src="{{ stream.screen_url }}" onerror="this.src='/static/not_found.png'" />
+        {{stream.name}}
+        {% if stream.active %}
+        <div class="online" alt="This stream is active">&#x25cf;</div>
+        {% endif %}
+      </a>
+    </div>
+    <!--{{stream.start}}-->
+  </div>
   {% endfor %}
-  </body>
-</html>
+</div>
+{% endblock %}

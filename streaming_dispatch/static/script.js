@@ -19,6 +19,9 @@ function initPlayer() {
   var video = document.getElementById('video');
   var player = new shaka.Player(video);
 
+  //player.configure({'streaming':
+    //{'rebufferingGoal': 5, 'bufferingGoal': 10}});
+
   // Attach player to the window to make it easy to access in the JS console.
   window.player = player;
 

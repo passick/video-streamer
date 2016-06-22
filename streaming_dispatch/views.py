@@ -1,7 +1,7 @@
 from streaming_dispatch.forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.shortcuts import render_to_response, render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
@@ -14,17 +14,26 @@ from utils import *
 from .models import Stream
 
 def index(request):
-    return render(request, 'index.html', {'streams': Stream.objects.all().order_by('-start')})
+    streams = []
+    username = request.GET.get('by')
+    if username:
+        try:
+            user = User.objects.get(username=username)
+            streams = user.stream_set.all().order_by('-start')
+        except User.DoesNotExist:
+            return redirect('index')
+    else:
+        streams = Stream.objects.all().order_by('-start')
+    return render(request, 'index.html',
+            {'streams': streams,
+             'show_create_stream_link': request.user.is_authenticated
+            })
 
 def stream(request, stream_id):
     requested_stream = get_object_or_404(Stream, id=stream_id)
     is_author = (request.user == requested_stream.author)
     return render(request, 'stream.html',
-            {'stream': requested_stream,
-                'is_author': is_author,
-                'dash_url': get_dash_stream_url(requested_stream),
-                'viewer_url': get_stream_viewer_url(requested_stream),
-                'publisher_url': get_stream_publisher_url(requested_stream)})
+            {'stream': requested_stream, 'is_author': is_author})
 
 @login_required
 def create_stream(request):
@@ -32,7 +41,7 @@ def create_stream(request):
         form = StreamForm(request.POST)
         if form.is_valid():
             stream = form.save(commit=False)
-            stream.active = True
+            stream.active = False
             stream.author = request.user
             stream.start = datetime.now()
             stream.save()
@@ -43,6 +52,37 @@ def create_stream(request):
     else:
         form = StreamForm()
     return render(request, 'add_stream.html', {'form': form})
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+@csrf_exempt
+def stream_status_changed(request):
+    if request.method != 'POST':
+        return HttpResponseBadRequest("You should POST.")
+    server_ip = get_client_ip(request)
+    if not StreamingServer.objects.filter(url=server_ip).exists():
+        return HttpResponseForbidden("")
+    stream_id = request.POST['name']
+    if not stream_id:
+        return HttpResponseBadRequest("Need id.")
+    try:
+        stream_id = int(stream_id)
+        status = int(request.POST['status'])
+        stream = Stream.objects.get(id=stream_id)
+        if status == 0:
+            stream.active = False
+        else:
+            stream.active = True
+        stream.save()
+        return HttpResponse("ok")
+    except ValueError:
+        return HttpResponseBadRequest("Need valid id and new status.")
 
 class RegisterFormView(FormView):
     form_class = UserCreationForm
