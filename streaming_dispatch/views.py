@@ -2,11 +2,12 @@ from streaming_dispatch.forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, authenticate
 from django.views.decorators.csrf import csrf_protect
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render_to_response, render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.views.generic.edit import FormView
 from django.contrib.auth.forms import UserCreationForm
+from datetime import datetime
 
 from .models import Stream
 
@@ -14,7 +15,23 @@ def index(request):
     return render(request, 'index.html', {'streams': Stream.objects.all().order_by('-start')})
 
 def stream(request, stream_id):
-    return HttpResponse('haha ' + str(stream_id))
+    requested_stream = get_object_or_404(Stream, id=stream_id)
+    return HttpResponse('haha ' + requested_stream.name)
+
+@login_required
+def create_stream(request):
+    if request.method == 'POST':
+        form = StreamForm(request.POST)
+        if form.is_valid():
+            stream = form.save(commit=False)
+            stream.active = True
+            stream.author = request.user
+            stream.start = datetime.now()
+            stream.save()
+            return redirect('stream', stream_id=stream.id)
+    else:
+        form = StreamForm()
+    return render(request, 'add_stream.html', {'form': form})
 
 class RegisterFormView(FormView):
     form_class = UserCreationForm
