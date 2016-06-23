@@ -15,15 +15,18 @@
     </div>
   {% else %}
     <div id="stream_div">
-      <video id="video" source="{{stream.dash_url}}" controls autoplay></video>
+      <!--<video id="video" source="{{stream.hls_url}}" controls autoplay></video>-->
       <!--<video data-dashjs-player autoplay src="http://dash.edgesuite.net/envivio/EnvivioDash3/manifest.mpd" controls></video>-->
+      <video id="video" class="video-js vjs-default-skin" controls autoplay preload="auto" data-setup='{}'>
+        <source src="{{stream.hls_url}}" type="application/x-mpegURL">
+      </video>
     </div>
   {% endif %}
   <p>
   {% if is_author %}
   Publishing url:
   <a href="{{stream.publisher_url}}">{{stream.publisher_url}}</a>.
-  Paste this link into your favourite streaming software.
+  Paste this link into your favourite streaming app.
   For example:
   <pre><code>
 ffmpeg -f alsa -i default -f v4l2 -video_size 640x480 \

@@ -17,24 +17,33 @@ function initApp() {
 function initPlayer() {
   // Create a Player instance.
   var video = document.getElementById('video');
-  var player = new shaka.Player(video);
+  if(Hls.isSupported()) {
+    var hls = new Hls();
+    manifestUri = video.getAttribute("source");
+    hls.loadSource(manifestUri);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED,function() {
+      video.play();
+    });
+  }
+  //var player = new shaka.Player(video);
 
   //player.configure({'streaming':
     //{'rebufferingGoal': 5, 'bufferingGoal': 10}});
 
   // Attach player to the window to make it easy to access in the JS console.
-  window.player = player;
+  //window.player = player;
 
   // Listen for error events.
-  player.addEventListener('error', onErrorEvent);
-  manifestUri = video.getAttribute("source");
+  //player.addEventListener('error', onErrorEvent);
+  //manifestUri = video.getAttribute("source");
 
   // Try to load a manifest.
   // This is an asynchronous process.
-  player.load(manifestUri).then(function() {
+  //player.load(manifestUri).then(function() {
     // This runs if the asynchronous load is successful.
-    console.log('The video has now been loaded!');
-  }).catch(onError);  // onError is executed if the asynchronous load fails.
+    //console.log('The video has now been loaded!');
+  //}).catch(onError);  // onError is executed if the asynchronous load fails.
 }
 
 function onErrorEvent(event) {
@@ -47,4 +56,4 @@ function onError(error) {
   console.error('Error code', error.code, 'object', error);
 }
 
-document.addEventListener('DOMContentLoaded', initApp);
+//document.addEventListener('DOMContentLoaded', initApp);

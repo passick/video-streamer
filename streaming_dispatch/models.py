@@ -30,6 +30,10 @@ class Stream(models.Model):
     return "http://" + stream.server.url + ":8080/dash/" + str(stream.id) + ".mpd"
   dash_url = property(_get_dash_stream_url)
 
+  def _get_hls_stream_url(stream):
+    return "http://" + stream.server.url + ":8080/hls/" + str(stream.id) + ".m3u8"
+  hls_url = property(_get_hls_stream_url)
+
   def _get_stream_publisher_url(stream):
     return "rtmp://" + stream.server.url + "/mytv/" + str(stream.id) + "?key=" + stream.key
   publisher_url = property(_get_stream_publisher_url)

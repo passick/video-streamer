@@ -123,3 +123,17 @@ ul.errorlist {
   margin-bottom: -0.5rem;
 }
 
+.stream p {
+  margin-bottom: 0rem;
+}
+
+.stream p, .stream pre {
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+#video {
+  margin: 0 auto;
+  margin-bottom: 3rem;
+  max-width: 78rem;
+}
