@@ -86,11 +86,14 @@ def stream_status_changed(request):
 
 class RegisterFormView(FormView):
     form_class = UserCreationForm
-    success_url = "/login/"
+    success_url = "/"
     template_name = "register.html"
 
     def form_valid(self, form):
         form.save()
+        new_user = authenticate(username=form.cleaned_data['username'],
+                password=form.cleaned_data['password1'])
+        login(self.request, new_user)
         return super(RegisterFormView, self).form_valid(form)
 
 from django.contrib.auth.forms import AuthenticationForm

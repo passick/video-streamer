@@ -137,3 +137,9 @@ ul.errorlist {
   margin-bottom: 3rem;
   max-width: 78rem;
 }
+
+.error404 {
+  margin-top: 10rem;
+  margin-bottom: 10rem;
+  text-align: center;
+}
